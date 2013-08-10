@@ -9,6 +9,6 @@ package com.dheller.parking_project;
 
 public final class Manifest {
     public static final class permission {
-        public static final String MAPS_RECEIVE="com.example.mapdemo.permission.MAPS_RECEIVE";
+        public static final String MAPS_RECEIVE="com.dheller.parking_project.permission.MAPS_RECEIVE";
     }
 }
