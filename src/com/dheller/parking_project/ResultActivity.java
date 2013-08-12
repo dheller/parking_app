@@ -6,7 +6,6 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.StringMap;
@@ -42,14 +41,7 @@ public class ResultActivity extends Activity{
 	    
 	    //Searches the parking list for data
         Search(lat, lon, hour, duration, map);
-        
-        TextView a = (TextView) findViewById(R.id.number_of_tickets);
-        TextView b = (TextView) findViewById(R.id.number_of_tickets_time);
-        TextView c = (TextView) findViewById(R.id.number_of_tickets_weekend);
-        
-        a.setText(String.valueOf(number_of_tickets));
-        b.setText(String.valueOf(average_ticket_price));
-        c.setText(String.valueOf(tickets_at_time));
+        riskFactor(number_of_tickets, tickets_at_time, tickets_by_day);
 	}
 	
 	public void Search(double lat, double lon, int hour, String duration, HashMap<String, StringMap> map) {
@@ -85,5 +77,13 @@ public class ResultActivity extends Activity{
 		
 		//Grabs the # of weekend tickets
 		tickets_by_day = Integer.parseInt(array.get(2).toString().substring(0, 1));
+	}
+	
+	public void riskFactor(int number_of_tickets, int tickets_at_time, int tickets_by_day) {
+		risk_factor = logOfBase(13500, number_of_tickets);
+	}
+	
+	public double logOfBase(int base, int num) {
+	    return Math.log(num) / Math.log(base);
 	}
 }

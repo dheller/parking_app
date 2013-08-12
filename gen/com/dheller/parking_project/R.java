@@ -332,6 +332,7 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020018;
     }
     public static final class id {
+        public static final int GMap=0x7f050016;
         public static final int address=0x7f05000a;
         public static final int button1=0x7f050010;
         public static final int button_map=0x7f05000e;
@@ -340,7 +341,7 @@ containing a value of this type.
         public static final int hybrid=0x7f050004;
         public static final int length=0x7f050008;
         public static final int lookup=0x7f05000b;
-        public static final int menu_settings=0x7f050017;
+        public static final int menu_settings=0x7f050018;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int number_of_tickets=0x7f05000f;
@@ -349,7 +350,7 @@ containing a value of this type.
         public static final int progressBar1=0x7f050011;
         public static final int satellite=0x7f050002;
         public static final int spinner1=0x7f050009;
-        public static final int spinnerTarget=0x7f050016;
+        public static final int spinnerTarget=0x7f050017;
         public static final int terrain=0x7f050003;
         public static final int textView4=0x7f050014;
         public static final int textView5=0x7f050015;

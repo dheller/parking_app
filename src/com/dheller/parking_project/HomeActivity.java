@@ -4,16 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 public class HomeActivity extends Activity {
 	
@@ -30,14 +24,16 @@ public class HomeActivity extends Activity {
 	static String lon_name = "com.dheller.parking_project.LONGITUDE";
 	static String duration_name = "com.dheller.parking_project.DURATION";
 	static String hour_name = "com.dheller.parking_project.HOUR";
+	static String lookup_name = "com.dheller.parking_project.LOOKUP";
+	static String current_name = "com.dheller.parking_project.CURRENT";
 	
 	//Declares opening variables for the search screen
-	private Spinner options;
+	static Spinner options;
 	Button button_map;
 	Button button_search;
-	EditText lookup;
-	CheckBox current_location;
-	TimePicker timePicker;
+	static EditText lookup;
+	static CheckBox current_location;
+	static TimePicker timePicker;
 	static public String data;
 	
 	//OnCreate is called when the app is opened
@@ -81,77 +77,24 @@ public class HomeActivity extends Activity {
     
     //Creates intent to display search results
     public void GoToResults(View view) {
-    	Intent intent = new Intent(this, ResultActivity.class);
+    	Intent intent = new Intent(this, LoadingScreen.class);
     	
-    	//Creates variables to store the current time and duration of stay
+    	//This was being gay so I need to do it in this class
     	timePicker = (TimePicker) findViewById(R.id.time_picker);
-    	String duration = options.getItemAtPosition(options.getSelectedItemPosition()).toString();
     	Integer hour = timePicker.getCurrentHour();
-    	Integer minute = timePicker.getCurrentMinute();
-    	
-    	//Stores the timing variables in the intent
-    	intent.putExtra(duration_name, duration);
-    	intent.putExtra(hour_name, hour);
+    	intent.putExtra(hour_name, hour);    
     	
     	//Creates a variable storing the address the user wishes to lookup
     	lookup = (EditText) findViewById(R.id.lookup);
     	String final_lookup = lookup.getText().toString();
+    	intent.putExtra(lookup_name, final_lookup);
     	
     	//Creates a variable to store the checkbox value
     	current_location = (CheckBox) findViewById(R.id.current_location);
     	boolean use_current = current_location.isChecked();
+    	intent.putExtra(current_name, use_current);
     	
-    	//Creates variables necessary to geocode the user inputted address
-    	Geocoder geocode = new Geocoder(getApplicationContext(), Locale.getDefault());
-    	List<Address> fromLocationName = null;
+    	startActivity(intent);
     	
-    	//Checks to make sure a valid address was entered and that the user doesn't want to use their current location
-    	if (final_lookup != null && !final_lookup.isEmpty() && !use_current) {
-	    	
-    		try {
-				fromLocationName = geocode.getFromLocationName(final_lookup, 1);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-    		
-        	//Geocodes the address if one exists
-        	if (fromLocationName != null && fromLocationName.size() > 0) {
-        	    Address a = fromLocationName.get(0);
-            	double lat = a.getLatitude();
-            	double lon = a.getLongitude();
-            	
-            	//Passes the coordinates to the result activity and starts it
-            	intent.putExtra(lat_name, lat);
-            	intent.putExtra(lon_name, lon);
-            	startActivity(intent);
-        	} else {
-        		Toast.makeText(getBaseContext(), "Something went wrong", Toast.LENGTH_LONG).show();    		        		
-        	}	
-    	}
-    	
-    	//Finds the current location of the user
-    	else if (use_current) {
-
-    		GpsListener mGPS = new GpsListener(this);
-    		
-    		if(mGPS.canGetLocation){
-
-	    		double lat = mGPS.getLatitude();
-	    		double lon = mGPS.getLongitude();
-	
-	        	//Passes the coordinates to the result activity and starts it
-	        	intent.putExtra(lat_name, lat);
-	        	intent.putExtra(lon_name, lon);
-	        	startActivity(intent);
-    		
-    		} else {
-    			Log.e("HELP", "Hmm, couldn't get the location");
-    		}    		
-	    }
-    	
-    	//Prompts the user to enter an address or choose to use their current location
-    	else {
-    		Toast.makeText(getBaseContext(), "Please enter an address or choose \"use current location\"", Toast.LENGTH_LONG).show();
-    	}
     }
 }

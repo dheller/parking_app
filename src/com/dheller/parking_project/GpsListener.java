@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 public class GpsListener implements LocationListener {
 	
@@ -48,7 +49,7 @@ public class GpsListener implements LocationListener {
 	        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
 	        if (isGPSEnabled == false && isNetworkEnabled == false) {
-	            // no network provider is enabled
+	            Log.e("NETWORK", "NO GPS OR NETWORK");
 	        } else {
 	            this.canGetLocation = true;
 	            if (isNetworkEnabled) {
