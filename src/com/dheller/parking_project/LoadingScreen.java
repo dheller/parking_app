@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class LoadingScreen extends Activity  
 {  
-    //A ProgressDialog object  
+    //A ProgressDialog object
     private ProgressDialog progressDialog;  
 	Intent intent = new Intent(this, ResultActivity.class);
 	GpsListener mGPS = new GpsListener(this);
@@ -147,6 +147,6 @@ public class LoadingScreen extends Activity
             progressDialog.dismiss();  
             //initialize the View  
             startActivity(intent);
-        }  
-    }  
+        }
+    }
 }  

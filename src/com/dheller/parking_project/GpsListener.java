@@ -34,12 +34,12 @@ public class GpsListener implements LocationListener {
 	private Context mContext;
 	
 	public GpsListener(Context context) {
-	    this.mContext = context;
+		this.mContext = context;
 	    getLocation();
 	}
 	
 	public Location getLocation() {
-	    try {
+		try {
 	        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
 	        // getting GPS status
@@ -47,11 +47,10 @@ public class GpsListener implements LocationListener {
 
 	        // getting network status
 	        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
 	        if (isGPSEnabled == false && isNetworkEnabled == false) {
 	            Log.e("NETWORK", "NO GPS OR NETWORK");
 	        } else {
-	            this.canGetLocation = true;
+	        	this.canGetLocation = true;
 	            if (isNetworkEnabled) {
 	                locationManager.requestLocationUpdates(
 	                        LocationManager.NETWORK_PROVIDER,
@@ -85,6 +84,7 @@ public class GpsListener implements LocationListener {
 	        }
 
 	    } catch (Exception e) {
+		    Log.e("STARTED", "This thing actually startedd");
 	        e.printStackTrace();
 	    }
 

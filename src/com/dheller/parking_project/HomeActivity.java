@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class HomeActivity extends Activity {
 	
@@ -66,7 +67,6 @@ public class HomeActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
     }
     
     //Creates intent to start the map view
@@ -77,7 +77,7 @@ public class HomeActivity extends Activity {
     
     //Creates intent to display search results
     public void GoToResults(View view) {
-    	Intent intent = new Intent(this, LoadingScreen.class);
+    	Intent intent = new Intent(this, ResultActivity.class);
     	
     	//This was being gay so I need to do it in this class
     	timePicker = (TimePicker) findViewById(R.id.time_picker);
@@ -94,7 +94,14 @@ public class HomeActivity extends Activity {
     	boolean use_current = current_location.isChecked();
     	intent.putExtra(current_name, use_current);
     	
-    	startActivity(intent);
+    	//Verifies the user has either entered an address or used their current location, but not both
+    	if ((lookup != null && !final_lookup.isEmpty()) && use_current) {
+    		Toast.makeText(getBaseContext(), "Uncheck \"use current location\" to search for a specific address", Toast.LENGTH_LONG).show();
+    	} else if ((lookup != null && !final_lookup.isEmpty()) || use_current) {
+    		startActivity(intent);
+    	} else {
+    		Toast.makeText(getBaseContext(), "Please select \"use current location\" or enter an address", Toast.LENGTH_LONG).show();
+    	}
     	
     }
 }

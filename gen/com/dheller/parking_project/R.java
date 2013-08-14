@@ -329,31 +329,36 @@ containing a value of this type.
         public static final int common_signin_btn_text_normal_light=0x7f020015;
         public static final int common_signin_btn_text_pressed_dark=0x7f020016;
         public static final int common_signin_btn_text_pressed_light=0x7f020017;
-        public static final int ic_launcher=0x7f020018;
+        public static final int cool_gradient=0x7f020018;
+        public static final int ic_launcher=0x7f020019;
+        public static final int mocha_grunge=0x7f02001a;
+        public static final int mocha_grunge_green=0x7f02001b;
     }
     public static final class id {
-        public static final int GMap=0x7f050016;
+        public static final int GMap=0x7f050018;
+        public static final int RelativeLayout1=0x7f05000f;
         public static final int address=0x7f05000a;
-        public static final int button1=0x7f050010;
+        public static final int average_ticket_price=0x7f050016;
+        public static final int average_ticket_price_title=0x7f050015;
         public static final int button_map=0x7f05000e;
         public static final int button_search=0x7f05000d;
         public static final int current_location=0x7f05000c;
+        public static final int danger_score=0x7f050010;
         public static final int hybrid=0x7f050004;
         public static final int length=0x7f050008;
         public static final int lookup=0x7f05000b;
-        public static final int menu_settings=0x7f050018;
+        public static final int menu_settings=0x7f05001a;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int number_of_tickets=0x7f05000f;
-        public static final int number_of_tickets_time=0x7f050012;
-        public static final int number_of_tickets_weekend=0x7f050013;
-        public static final int progressBar1=0x7f050011;
+        public static final int number_of_tickets=0x7f050014;
+        public static final int number_of_tickets_title=0x7f050013;
+        public static final int recommendation=0x7f050017;
+        public static final int risk=0x7f050012;
+        public static final int risk_factor=0x7f050011;
         public static final int satellite=0x7f050002;
         public static final int spinner1=0x7f050009;
-        public static final int spinnerTarget=0x7f050017;
+        public static final int spinnerTarget=0x7f050019;
         public static final int terrain=0x7f050003;
-        public static final int textView4=0x7f050014;
-        public static final int textView5=0x7f050015;
         public static final int time=0x7f050006;
         public static final int time_picker=0x7f050007;
         public static final int title=0x7f050005;
@@ -369,7 +374,7 @@ containing a value of this type.
         public static final int activity_main=0x7f090000;
     }
     public static final class string {
-        public static final int address=0x7f06001b;
+        public static final int address=0x7f06001c;
         public static final int app_name=0x7f060015;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
@@ -394,6 +399,7 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f06000f;
+        public static final int average_ticket_price_title=0x7f060022;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -449,12 +455,16 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f06000e;
-        public static final int current_location=0x7f06001a;
-        public static final int length=0x7f06001d;
-        public static final int map=0x7f060019;
+        public static final int current_location=0x7f06001b;
+        public static final int go_to_search=0x7f060019;
+        public static final int length=0x7f06001e;
+        public static final int map=0x7f06001a;
         public static final int menu_settings=0x7f060016;
+        public static final int number_of_tickets=0x7f060021;
+        public static final int results=0x7f06001f;
+        public static final int risk_factor=0x7f060020;
         public static final int search=0x7f060018;
-        public static final int time=0x7f06001c;
+        public static final int time=0x7f06001d;
         public static final int title=0x7f060017;
     }
     public static final class style {
