@@ -6,9 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,6 +31,9 @@ public class HomeActivity extends Activity {
 	static String hour_name = "com.dheller.parking_project.HOUR";
 	static String lookup_name = "com.dheller.parking_project.LOOKUP";
 	static String current_name = "com.dheller.parking_project.CURRENT";
+	static String error_geocode_name = "com.dheller.parking_project.geocode";
+	static String error_gps_name = "com.dheller.parking_project.gps";
+	static String risk_name = "com.dheller.parking_project.risk";
 	
 	//Declares opening variables for the search screen
 	static Spinner options;
@@ -69,6 +76,23 @@ public class HomeActivity extends Activity {
         }
     }
     
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	    	
+    	Intent intent = getIntent();
+
+    	String error_geocode = intent.getStringExtra(error_geocode_name);
+    	String error_gps = intent.getStringExtra(error_gps_name);
+    	
+    	if (error_geocode != null) {
+    		Log.e("JJ", "d'd");
+    		Toast.makeText(getBaseContext(), error_geocode, Toast.LENGTH_LONG).show();
+    	} else if (error_gps != null) {
+    		Toast.makeText(getBaseContext(), error_gps, Toast.LENGTH_LONG).show();
+    	}
+    }
+    
     //Creates intent to start the map view
     public void GoToMap(View view) {
     	Intent intent = new Intent(this, MapActivity.class);
@@ -97,11 +121,24 @@ public class HomeActivity extends Activity {
     	//Verifies the user has either entered an address or used their current location, but not both
     	if ((lookup != null && !final_lookup.isEmpty()) && use_current) {
     		Toast.makeText(getBaseContext(), "Uncheck \"use current location\" to search for a specific address", Toast.LENGTH_LONG).show();
-    	} else if ((lookup != null && !final_lookup.isEmpty()) || use_current) {
+    	} else if ((lookup != null && !final_lookup.isEmpty())) {
+    		if (isNetworkAvailable()) {
+    			startActivity(intent);
+    		} else {
+    			Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG).show();
+    		}
+    	} else if (use_current) {
     		startActivity(intent);
     	} else {
     		Toast.makeText(getBaseContext(), "Please select \"use current location\" or enter an address", Toast.LENGTH_LONG).show();
     	}
     	
+    }
+    
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

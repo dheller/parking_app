@@ -2,6 +2,7 @@ package com.dheller.parking_project;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MapActivity extends Activity{
     
@@ -37,6 +39,7 @@ public class MapActivity extends Activity{
 		Intent intent = getIntent();
 		double lat = intent.getDoubleExtra(HomeActivity.lat_name, 43.6481);
 		double lon = intent.getDoubleExtra(HomeActivity.lon_name, -79.4042);
+		double risk = intent.getDoubleExtra(HomeActivity.risk_name, 0);
 		LatLng coords = new LatLng(lat,lon);
 		
 		Log.e("LAT", String.valueOf(lat));
@@ -64,7 +67,35 @@ public class MapActivity extends Activity{
 	        	
 	        	//Sets the initial camera position
 	        	map.moveCamera(CameraUpdateFactory.newLatLng(coords));
+	        	
+	        	int color = turnRiskIntoColor(risk);
+	        	
+	            map.addPolygon(new PolygonOptions()
+	            .add(new LatLng(lat, lon), new LatLng(lat-.002, lon), new LatLng(lat-.002, lon - .002), new LatLng(lat, lon - .002))
+	            .strokeColor(color)
+	            .fillColor(color));
+	        	
 	        }
 	    }
 	}
+	
+	int turnRiskIntoColor(double risk) {
+		
+		double red;
+		double green;
+		
+		if (risk <= .5) {
+			green = 255;
+			red = 255 * (2 * risk);
+		} else {
+			red = 255;
+			green = (255 - (255 * risk)) * 2;
+		}
+		
+		int red_int = (int) red;
+		int green_int = (int) green;
+		
+		return Color.rgb(red_int, green_int, 0);
+	}
+	
 }

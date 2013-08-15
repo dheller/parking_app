@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
@@ -48,6 +49,9 @@ public class ResultActivity extends Activity{
 	int next_section;
 	double lat;
 	double lon;
+	static Location loc;
+	String error_geocode;
+	String error_gps;
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,12 +180,15 @@ public class ResultActivity extends Activity{
 		@Override  
         protected Void doInBackground(Void... params)  
         {  
+        	//Who knows what this does
         	Looper.prepare();
+        	
+        	//Starts the GPS listener early cause it sucks and is slow
         	GpsListener mGPS = new GpsListener(getApplicationContext());
-            Intent HomeIntent = getIntent();
-            
+
     	    //Gets the intent and pulls relevant data from it
-    	    int hour = HomeIntent.getIntExtra(HomeActivity.hour_name, 0);
+        	Intent HomeIntent = getIntent();
+        	int hour = HomeIntent.getIntExtra(HomeActivity.hour_name, 0);
         	String duration = HomeActivity.options.getItemAtPosition(HomeActivity.options.getSelectedItemPosition()).toString();
         	
         	//Converts the duration to a workable amount of time
@@ -219,24 +226,35 @@ public class ResultActivity extends Activity{
                 	lon = a.getLongitude();
                 	
             	} else {
-            		Log.e("FOOL", "WHAT WRONG WITH YOU FOOL");	        		
+            		Log.e("FOOL", "WHAT WRONG WITH YOU FOOL");
+        			
+            		error_geocode = "Couldn't find the address.";
+            		
+            		//Shuts down the results screen if the address can't be geocoded
+                    progressDialog.dismiss();
+        			GoToSearch(findViewById(R.layout.activity_result));
+        			cancel(true);
             	}	
         	}
         	
         	//Finds the current location of the user
         	else if (use_current) {
-        		
-        		if(mGPS.canGetLocation){
-
-    	    		lat = mGPS.getLatitude();
-    	    		lon = mGPS.getLongitude();
-        		
+        		if (mGPS.canGetLocation && loc != null) {
+    	    		lat = mGPS.getLatitude(loc);
+    	    		lon = mGPS.getLongitude(loc);
         		} else {
         			Log.e("HELP", "Hmm, couldn't get the location");
+        			
+        			error_gps = "Couldn't get the location using GPS";
+        			
+        			//Shuts down the results screen if the GPS can't find anything
+                    progressDialog.dismiss();
+        			GoToSearch(findViewById(R.layout.activity_result));
+        			cancel(true);
         		}    		
     	    }
         	
-        	//Prompts the user to enter an address or choose to use their current location
+        	//Prompts the user to enter an address or choose to use their current location.  Shouldn't ever end up here.
         	else {
         		Log.e("NO ADDRESS/CURRENT", "IDIOT");
         	}
@@ -298,12 +316,19 @@ public class ResultActivity extends Activity{
     	//Stores the starting coordinates for the map
     	intent.putExtra(HomeActivity.lat_name, lat);
     	intent.putExtra(HomeActivity.lon_name, lon);
+    	intent.putExtra(HomeActivity.risk_name, risk_factor);
 
     	startActivity(intent);
     }
     
     public void GoToSearch(View view) {
     	Intent intent = new Intent(this, HomeActivity.class);
+    	
+    	if (error_geocode != null) {
+    		intent.putExtra(HomeActivity.error_geocode_name, error_geocode);
+    	} else if (error_gps != null) {
+    		intent.putExtra(HomeActivity.error_gps_name, error_gps);
+    	}
     	startActivity(intent);
     }
 }
