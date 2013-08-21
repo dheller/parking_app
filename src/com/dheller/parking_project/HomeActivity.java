@@ -5,14 +5,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,7 +39,10 @@ public class HomeActivity extends Activity {
 	static String current_name = "com.dheller.parking_project.CURRENT";
 	static String error_geocode_name = "com.dheller.parking_project.geocode";
 	static String error_gps_name = "com.dheller.parking_project.gps";
+	static String error_loc_name = "com.dheller.parking_project.loc";
 	static String risk_name = "com.dheller.parking_project.risk";
+	static String lat_via_map_name = "com.dheller.parking_project.lat";
+	static String lon_via_map_name = "com.dheller.parking_project.lon";
 	
 	//Declares opening variables for the search screen
 	static Spinner options;
@@ -43,12 +52,22 @@ public class HomeActivity extends Activity {
 	static CheckBox current_location;
 	static TimePicker timePicker;
 	static public String data;
+	static int hour = 100;
 	
 	//OnCreate is called when the app is opened
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        //Inflates the action bar and sets a couple of variables
+        ActionBar bar = getActionBar();
+        bar.setTitle("Search by Address");
+        bar.show();
+        
+        //Initializes the checkbox object and sets it to checked
+        CheckBox now = (CheckBox) findViewById(R.id.now);
+        now.setChecked(true);
         
         //Initializes the spinner object
         options = (Spinner) findViewById(R.id.spinner1);
@@ -84,13 +103,30 @@ public class HomeActivity extends Activity {
 
     	String error_geocode = intent.getStringExtra(error_geocode_name);
     	String error_gps = intent.getStringExtra(error_gps_name);
+    	String error_loc = intent.getStringExtra(error_loc_name);
     	
     	if (error_geocode != null) {
     		Log.e("JJ", "d'd");
     		Toast.makeText(getBaseContext(), error_geocode, Toast.LENGTH_LONG).show();
     	} else if (error_gps != null) {
     		Toast.makeText(getBaseContext(), error_gps, Toast.LENGTH_LONG).show();
+    	} else if (error_loc != null) {
+    		Toast.makeText(getBaseContext(), error_loc, Toast.LENGTH_LONG).show();
     	}
+    	
+    	//Pulls the latitude and longitude if they came from the map
+    	String lat = intent.getStringExtra(lat_via_map_name);
+    	String lon = intent.getStringExtra(lon_via_map_name);
+    	
+    	intent.putExtra(lat_via_map_name, "");
+    	intent.putExtra(lon_via_map_name, "");
+    	
+    	if (lat != null && lon != null && !lat.isEmpty() && !lon.isEmpty()) {
+	    	//Populates the address search box with the supplied coordinates
+	    	lookup = (EditText) findViewById(R.id.lookup);
+	    	lookup.setText(lat + ", " + lon);
+    	}
+    	
     }
     
     //Creates intent to start the map view
@@ -103,10 +139,22 @@ public class HomeActivity extends Activity {
     public void GoToResults(View view) {
     	Intent intent = new Intent(this, ResultActivity.class);
     	
-    	//This was being gay so I need to do it in this class
-    	timePicker = (TimePicker) findViewById(R.id.time_picker);
-    	Integer hour = timePicker.getCurrentHour();
-    	intent.putExtra(hour_name, hour);    
+    	//Loads the checkbox to see if the user wants to park now
+    	CheckBox now = (CheckBox) findViewById(R.id.now);
+    	
+    	//Verifies that the user has entered a time to start parking
+    	if (hour == 100 && !now.isChecked()) {
+    		Toast.makeText(getBaseContext(), "Please choose a start time", Toast.LENGTH_LONG).show();
+    		return;
+    	} else if (now.isChecked()) {
+    		Time current = new Time();
+    		current.setToNow();
+    		hour = current.hour;
+    	}
+    	
+    	//Stores the current hour in the intent and resets it
+    	intent.putExtra(hour_name, hour);
+    	hour = 100;
     	
     	//Creates a variable storing the address the user wishes to lookup
     	lookup = (EditText) findViewById(R.id.lookup);
@@ -140,5 +188,46 @@ public class HomeActivity extends Activity {
               = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    
+    public void GoToAbout(View view) {
+    	Intent intent = new Intent(this, AboutActivity.class);
+    	startActivity(intent);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // use an inflater to populate the ActionBar with items
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        
+        MenuItem item = menu.getItem(0);
+        item.getSubMenu().getItem(1).setVisible(false);
+        
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+    	
+    	if (item.toString().equals("About")) {
+    		GoToAbout(findViewById(R.layout.activity_result));
+    		return true;
+    	} else if (item.toString().equals("Map")) {
+    		GoToMap(findViewById(R.layout.activity_result));
+    		return true;
+    	}
+    	
+    	return true;
+    }
+    
+    public void ParkLater (View view) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getFragmentManager(), "timePicker");
+        
+        //Unchecks the checkbox if it isn't already
+        CheckBox now = (CheckBox) findViewById(R.id.now);
+        now.setChecked(false);
     }
 }

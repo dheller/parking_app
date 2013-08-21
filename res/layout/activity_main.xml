@@ -1,76 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/cool_gradient"
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
         android:text="@string/time"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TimePicker
-        android:id="@+id/time_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/length"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/length"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
     <TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/length"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginTop="20dp"
         android:text="@string/address"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
-    <EditText
-        android:id="@+id/lookup"
+    <Spinner
+        android:id="@+id/spinner1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
+        android:layout_alignRight="@+id/button_map"
+        android:layout_below="@+id/length"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        android:textColor="@color/white"
+        android:typeface="serif" />
 
     <CheckBox
         android:id="@+id/current_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/current_location" />
-
-    <Button
-        android:id="@+id/button_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/search"
-        android:onClick="GoToResults" />
+        android:layout_alignLeft="@+id/address"
+        android:layout_below="@+id/lookup"
+        android:layout_marginTop="0dp"
+        android:text="@string/current_location"
+        android:textSize="14sp"
+        android:typeface="serif" />
 
     <Button
         android:id="@+id/button_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_search"
+        android:layout_alignBottom="@+id/button_search"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:minWidth="125dp"
+        android:onClick="GoToMap"
         android:text="@string/map"
-        android:onClick="GoToMap" />
+        android:textSize="12sp"
+        android:typeface="serif" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/button_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/current_location"
+        android:layout_below="@+id/current_location"
+        android:layout_marginTop="10dp"
+        android:minWidth="125dp"
+        android:onClick="GoToResults"
+        android:text="@string/search"
+        android:textSize="12sp"
+        android:typeface="serif" />
+
+    <EditText
+        android:id="@+id/lookup"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/current_location"
+        android:layout_alignRight="@+id/button_map"
+        android:layout_below="@+id/address"
+        android:ems="10"
+        android:hint="Enter address or coordinates"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:typeface="serif" >
+
+        <requestFocus />
+    </EditText>
+
+    <CheckBox
+        android:id="@+id/now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/time"
+        android:layout_below="@+id/time"
+        android:layout_marginTop="10dp"
+        android:text="@string/now"
+        android:textSize="14sp"
+        android:typeface="serif" />
+
+    <TextView
+        android:id="@+id/length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/now"
+        android:layout_below="@+id/now"
+        android:layout_marginTop="20dp"
+        android:text="@string/length"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <Button
+        android:id="@+id/later"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/now"
+        android:layout_alignBottom="@+id/now"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/now"
+        android:height="10dp"
+        android:minWidth="75dp"
+        android:onClick="ParkLater"
+        android:text="@string/later"
+        android:textSize="12sp"
+        android:typeface="serif" />
+
+</RelativeLayout>

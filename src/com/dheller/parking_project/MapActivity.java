@@ -1,10 +1,11 @@
 package com.dheller.parking_project;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -13,37 +14,45 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MapActivity extends Activity{
     
 	private GoogleMap map;
 	
+	//Da variables
+	Intent intent;
+	double lat;
+	double lon;
+	LatLng coords;
+	
+	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
         
+        //Inflates the action bar and sets a couple of variables
+        ActionBar bar = getActionBar();
+        bar.hide();
+        
         //Makes sure Google Play Services are installed
         int checkGooglePlayServices = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         
+        //Get the intent and sees if there is a starting coordinate value.  If not, assigns general Toronto coordinates
+		intent = getIntent();
+		lat = intent.getDoubleExtra(HomeActivity.lat_name, 43.6481);
+		lon = intent.getDoubleExtra(HomeActivity.lon_name, -79.4042);
+		coords = new LatLng(lat,lon);
+        
         if (checkGooglePlayServices != ConnectionResult.SUCCESS) {
-        	Toast.makeText(getBaseContext(), "Sucka you need Google Play Services installed", Toast.LENGTH_LONG).show();
+        	Toast.makeText(getBaseContext(), "Google Play Services not installed", Toast.LENGTH_LONG).show();
         } else {       
         	setUpMapIfNeeded();
         }        
 	}
 	
 	private void setUpMapIfNeeded() {
-	    
-        //Get the intent and sees if there is a starting coordinate value.  If not, assigns general Toronto coordinates
-		Intent intent = getIntent();
-		double lat = intent.getDoubleExtra(HomeActivity.lat_name, 43.6481);
-		double lon = intent.getDoubleExtra(HomeActivity.lon_name, -79.4042);
-		double risk = intent.getDoubleExtra(HomeActivity.risk_name, 0);
-		LatLng coords = new LatLng(lat,lon);
-		
-		Log.e("LAT", String.valueOf(lat));
-		Log.e("LON", String.valueOf(lon));
 		
 		// Do a null check to confirm that we have not already instantiated the map.
 	    if (map == null) {
@@ -62,19 +71,23 @@ public class MapActivity extends Activity{
 	        	
 	        	//Checks to see if we have custom coordinates so we can zoom in
 	        	if (lat != 43.6481 || lon != -79.4042) {
-	        		map.moveCamera(CameraUpdateFactory.zoomTo(14));
+	        		map.moveCamera(CameraUpdateFactory.zoomTo(16));
+	        	} else {
+	        		map.moveCamera(CameraUpdateFactory.zoomTo(12));
 	        	}
 	        	
 	        	//Sets the initial camera position
 	        	map.moveCamera(CameraUpdateFactory.newLatLng(coords));
 	        	
-	        	int color = turnRiskIntoColor(risk);
+	        	if (lat != 43.6481 || lon != -79.4042) {
 	        	
-	            map.addPolygon(new PolygonOptions()
-	            .add(new LatLng(lat, lon), new LatLng(lat-.002, lon), new LatLng(lat-.002, lon - .002), new LatLng(lat, lon - .002))
-	            .strokeColor(color)
-	            .fillColor(color));
-	        	
+		        	//Generates the polygons
+		        	generatePolygons();
+		        	
+		        	//Marks the current search point
+		        	MarkerOptions marker = new MarkerOptions().position(coords).title("Search Zone");
+		        	map.addMarker(marker);
+	        	}
 	        }
 	    }
 	}
@@ -94,8 +107,44 @@ public class MapActivity extends Activity{
 		
 		int red_int = (int) red;
 		int green_int = (int) green;
+	
+		return Color.argb(80, red_int, green_int, 0);
+	}
+	
+	public void generatePolygons() {
 		
-		return Color.rgb(red_int, green_int, 0);
+		for (int x = 0; x<5; x++) {
+			for (int y = 0; y<5; y++) {
+				
+	        	int color = turnRiskIntoColor(ResultActivity.risks.get(x + (y * 5)));
+				
+	        	double lat_adj = x * .002;
+	        	double lon_adj = y * .002;
+	        	
+	            map.addPolygon(new PolygonOptions()
+	            .add(new LatLng(lat + .005 - lat_adj, lon + .005 - lon_adj),
+	            		new LatLng(lat + .005 - lat_adj, lon + .003 - lon_adj),
+	            		new LatLng(lat + .003 - lat_adj, lon + .003 - lon_adj),
+	            		new LatLng(lat + .003 - lat_adj, lon + .005 - lon_adj))
+	            .fillColor(color)
+	            .strokeColor(Color.argb(0, 0, 0, 0)));
+
+			}
+		}
+		
+	}
+	
+	public void mapSearch(View view) {
+		LatLng position = map.getCameraPosition().target;
+		
+		double lat_map = position.latitude;
+		double lon_map = position.longitude;
+		
+		Intent intent = new Intent(this, HomeActivity.class);
+		intent.putExtra(HomeActivity.lat_via_map_name, String.valueOf(lat_map));
+		intent.putExtra(HomeActivity.lon_via_map_name, String.valueOf(lon_map));
+		startActivity(intent);
+		
 	}
 	
 }

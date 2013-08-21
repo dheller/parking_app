@@ -331,47 +331,74 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_light=0x7f020017;
         public static final int cool_gradient=0x7f020018;
         public static final int ic_launcher=0x7f020019;
-        public static final int mocha_grunge=0x7f02001a;
-        public static final int mocha_grunge_green=0x7f02001b;
+        public static final int light_noise_diagonal=0x7f02001a;
+        public static final int light_noise_diagonal_blue=0x7f02001b;
+        public static final int logo=0x7f02001c;
+        public static final int logo_background=0x7f02001d;
+        public static final int logo_background_rounded=0x7f02001e;
+        public static final int logo_big=0x7f02001f;
+        public static final int logo_promo=0x7f020020;
+        public static final int mocha_grunge=0x7f020021;
+        public static final int mocha_grunge_green=0x7f020022;
+        public static final int mocha_grunge_grey=0x7f020023;
+        public static final int progress_bar_high=0x7f020024;
+        public static final int progress_bar_low=0x7f020025;
+        public static final int progress_bar_mid=0x7f020026;
     }
     public static final class id {
-        public static final int GMap=0x7f050018;
-        public static final int RelativeLayout1=0x7f05000f;
-        public static final int address=0x7f05000a;
-        public static final int average_ticket_price=0x7f050016;
-        public static final int average_ticket_price_title=0x7f050015;
-        public static final int button_map=0x7f05000e;
-        public static final int button_search=0x7f05000d;
-        public static final int current_location=0x7f05000c;
-        public static final int danger_score=0x7f050010;
+        public static final int GMap=0x7f050022;
+        public static final int RelativeLayout1=0x7f05000e;
+        public static final int TextView01=0x7f050020;
+        public static final int address=0x7f050010;
+        public static final int average_ticket_price=0x7f05001e;
+        public static final int average_ticket_price_title=0x7f05001c;
+        public static final int button_map=0x7f050013;
+        public static final int button_search=0x7f050016;
+        public static final int copyright=0x7f05000d;
+        public static final int current_location=0x7f050014;
+        public static final int email=0x7f05000a;
+        public static final int google=0x7f050005;
+        public static final int google_title=0x7f050006;
         public static final int hybrid=0x7f050004;
-        public static final int length=0x7f050008;
-        public static final int lookup=0x7f05000b;
-        public static final int menu_settings=0x7f05001a;
+        public static final int later=0x7f050018;
+        public static final int length=0x7f050011;
+        public static final int lookup=0x7f050015;
+        public static final int map_search=0x7f050023;
+        public static final int menu_about=0x7f050026;
+        public static final int menu_map=0x7f050028;
+        public static final int menu_search=0x7f050027;
+        public static final int menu_settings=0x7f050025;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int number_of_tickets=0x7f050014;
-        public static final int number_of_tickets_title=0x7f050013;
-        public static final int recommendation=0x7f050017;
-        public static final int risk=0x7f050012;
-        public static final int risk_factor=0x7f050011;
+        public static final int now=0x7f050017;
+        public static final int number_of_tickets=0x7f05001d;
+        public static final int number_of_tickets_title=0x7f05001b;
+        public static final int opendata=0x7f05000b;
+        public static final int opendata_title=0x7f05000c;
+        public static final int overview=0x7f050008;
+        public static final int overview_title=0x7f050007;
+        public static final int recommendation=0x7f05001f;
+        public static final int recommendation_title=0x7f050021;
+        public static final int risk=0x7f05001a;
+        public static final int risk_factor=0x7f050019;
         public static final int satellite=0x7f050002;
-        public static final int spinner1=0x7f050009;
-        public static final int spinnerTarget=0x7f050019;
+        public static final int spinner1=0x7f050012;
+        public static final int spinnerTarget=0x7f050024;
+        public static final int support=0x7f050009;
         public static final int terrain=0x7f050003;
-        public static final int time=0x7f050006;
-        public static final int time_picker=0x7f050007;
-        public static final int title=0x7f050005;
+        public static final int time=0x7f05000f;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_result=0x7f030001;
-        public static final int map=0x7f030002;
-        public static final int row=0x7f030003;
-        public static final int title=0x7f030004;
+        public static final int about=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int activity_result=0x7f030002;
+        public static final int map=0x7f030003;
+        public static final int row=0x7f030004;
+        public static final int title=0x7f030005;
     }
     public static final class menu {
         public static final int activity_main=0x7f090000;
+        public static final int menu=0x7f090001;
     }
     public static final class string {
         public static final int address=0x7f06001c;
@@ -455,17 +482,27 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f06000e;
+        public static final int copyright=0x7f06002b;
         public static final int current_location=0x7f06001b;
+        public static final int email=0x7f06002a;
         public static final int go_to_search=0x7f060019;
+        public static final int later=0x7f060028;
         public static final int length=0x7f06001e;
         public static final int map=0x7f06001a;
+        public static final int map_results=0x7f060024;
+        public static final int map_search=0x7f060023;
         public static final int menu_settings=0x7f060016;
+        public static final int now=0x7f060027;
         public static final int number_of_tickets=0x7f060021;
+        public static final int opendata=0x7f06002c;
+        public static final int overview=0x7f060029;
+        public static final int recommendation_title=0x7f060026;
         public static final int results=0x7f06001f;
         public static final int risk_factor=0x7f060020;
         public static final int search=0x7f060018;
         public static final int time=0x7f06001d;
         public static final int title=0x7f060017;
+        public static final int zone=0x7f060025;
     }
     public static final class style {
         /** 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -16,6 +17,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +43,8 @@ public class ResultActivity extends Activity{
 	double max_lon = -79.121999;
 	int number_of_tickets;
 	int average_ticket_price;
+	int number_of_tickets_real;
+	int average_ticket_price_real;
 	int tickets_at_time;
 	int tickets_at_next_time;
 	int tickets_by_day;
@@ -52,6 +58,10 @@ public class ResultActivity extends Activity{
 	static Location loc;
 	String error_geocode;
 	String error_gps;
+	String error_loc;
+	
+	//Where risks go
+    public static ArrayList<Double> risks = new ArrayList();
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +72,7 @@ public class ResultActivity extends Activity{
 	}
 	
 	//Handles the logic associated with searching for the proper information
-	public void Search(double lat, double lon, int hour, String duration, HashMap<String, StringMap> map) {
+	public ArrayList Search(double lat, double lon, int hour, String duration, HashMap<String, StringMap> map) {
 	    
 	    //Changes the coordinates to indexes
 		lat = (lat - min_lat) / .002;
@@ -74,51 +84,82 @@ public class ResultActivity extends Activity{
 	    if (lat != 0 && lon != 0) {	    	
 	    	lat_index = (int) lat;
 		    lon_index = (int) lon;
-		    
 	    } else {
 	    	Log.e("Coordinates", "Somewhere you went wrong and got 0s for coordinates");
 	    	lat_index = 0;
 	    	lon_index = 0;
 	    }
 	    
-		//Grabs the proper parking data from the list
-		ArrayList array = (ArrayList) map.get(String.valueOf(lat_index)).get(String.valueOf(lon_index));
+	    //This is the array of all the ticket data associated with the given coords
+	    ArrayList<ArrayList> values_list = new ArrayList();
+	    
+	    //This gets the appropriate ticket information for each box on the map
+	    for (int x=0;x<5;x++) {
+	    	for (int y=0;y<5;y++) {
+	    		values_list.add((ArrayList) map.get(String.valueOf(lat_index - 2 + x)).get(String.valueOf(lon_index - 2 + y)));
+	    	}
+	    }
 		
-		//I hate how I'm doing this.  Should come back to it at some point.
-		//Creates a temp variable to get the length of the string.
-		int temp1 = array.get(0).toString().length();
-		int temp2 = array.get(1).toString().length();
-		number_of_tickets = Integer.parseInt(array.get(0).toString().substring(0, temp1 - 2));
-		average_ticket_price = Integer.parseInt(array.get(1).toString().substring(0, temp2 - 2));
-		
-		//Pulls the number of tickets at the current time and the next time period
-		if (hour < 8) {
-			int temp = array.get(3).toString().length();
-			int temp3 = array.get(4).toString().length();
-			tickets_at_time = Integer.parseInt(array.get(3).toString().substring(0, temp - 2));
-			tickets_at_next_time = Integer.parseInt(array.get(4).toString().substring(0, temp3 - 2));
-		} else if (hour < 17) {
-			int temp = array.get(4).toString().length();
-			int temp3 = array.get(5).toString().length();
-			tickets_at_time = Integer.parseInt(array.get(4).toString().substring(0, temp - 2));
-			tickets_at_next_time = Integer.parseInt(array.get(5).toString().substring(0, temp3 - 2));
-		} else {
-			int temp = array.get(5).toString().length();
-			int temp3 = array.get(3).toString().length();
-			tickets_at_time = Integer.parseInt(array.get(5).toString().substring(0, temp - 2));
-			tickets_at_next_time = Integer.parseInt(array.get(3).toString().substring(0, temp3 - 2));
-		}
-		
+	    //This parses the information for each box and appends it to the values_list
+	    for (int i = 0; i < 25; i++) {
+	    	
+	    	ArrayList array = values_list.get(i);
+	    	
+			//I hate how I'm doing this.  Should come back to it at some point.
+			//Creates a temp variable to get the length of the string. Then uses that variable to chop off the decimals
+	    	//so it can be properly evaluated as an integer
+			int temp1 = array.get(0).toString().length();
+			int temp2 = array.get(1).toString().length();
+			number_of_tickets = Integer.parseInt(array.get(0).toString().substring(0, temp1 - 2));
+			average_ticket_price = Integer.parseInt(array.get(1).toString().substring(0, temp2 - 2));
+			
+			//Grabs the # of weekend tickets
+			tickets_by_day = Integer.parseInt(array.get(2).toString().substring(0, 1));
+			
+			//Pulls the number of tickets for the current time and the next time period
+			if (hour < 8) {
+				int temp = array.get(3).toString().length();
+				int temp3 = array.get(4).toString().length();
+				tickets_at_time = Integer.parseInt(array.get(3).toString().substring(0, temp - 2));
+				tickets_at_next_time = Integer.parseInt(array.get(4).toString().substring(0, temp3 - 2));
+			} else if (hour < 17) {
+				int temp = array.get(4).toString().length();
+				int temp3 = array.get(5).toString().length();
+				tickets_at_time = Integer.parseInt(array.get(4).toString().substring(0, temp - 2));
+				tickets_at_next_time = Integer.parseInt(array.get(5).toString().substring(0, temp3 - 2));
+			} else {
+				int temp = array.get(5).toString().length();
+				int temp3 = array.get(3).toString().length();
+				tickets_at_time = Integer.parseInt(array.get(5).toString().substring(0, temp - 2));
+				tickets_at_next_time = Integer.parseInt(array.get(3).toString().substring(0, temp3 - 2));
+			}
+
+			//Sets the appropriate values to the values list
+			ArrayList fixed = new ArrayList();
+			fixed.add(number_of_tickets);
+			fixed.add(average_ticket_price);
+			fixed.add(tickets_by_day);
+			fixed.add(tickets_at_time);
+			fixed.add(tickets_at_next_time);
+			
+			values_list.set(i, fixed);
+			
+			//Scope shit is making this necessary.  Lazy way to keep track of the actual number of tickets (as opposed to nearby zones)
+			if (i == 12) {
+				number_of_tickets_real = number_of_tickets;
+				average_ticket_price_real = average_ticket_price;
+			}
+			
+	    }
 		//Figures out how long until the start of the next section
 		next_section = hour % 8;
 		
-		//Grabs the # of weekend tickets
-		tickets_by_day = Integer.parseInt(array.get(2).toString().substring(0, 1));
+		return values_list;
+		
 	}
 	
 	//This is the algorithm to calculate how risky a given parking decision is
-	public void riskFactor(int number_of_tickets, int tickets_at_time, int tickets_at_next_time, int tickets_by_day, int length_of_stay) {
-		Log.e("#OFTIX", String.valueOf(number_of_tickets));
+	public double riskFactor(int number_of_tickets, int tickets_at_time, int tickets_at_next_time, int tickets_by_day, int length_of_stay) {
 		
 		//Makes sure the number of tickets in the zone isn't 0 before calculating the log
 		if (number_of_tickets > 0) {
@@ -127,8 +168,6 @@ public class ResultActivity extends Activity{
 			double future_danger = tickets_at_next_time / (double) number_of_tickets;
 			double length_risk = 0;
 			int count = 0;
-			
-			Log.e("NEXT", String.valueOf(next_section));
 			
 			//Adds up the risk associated with hours in the current time block
 			while (count <= next_section && count < length_of_stay) {
@@ -157,6 +196,9 @@ public class ResultActivity extends Activity{
 		} else {
 			risk_factor = 0;
 		}
+		
+		return risk_factor;
+		
 	}
 	
 	//Don't think you use this anywhere anymore.  Schedule for deletion
@@ -180,12 +222,17 @@ public class ResultActivity extends Activity{
 		@Override  
         protected Void doInBackground(Void... params)  
         {  
+       	
         	//Who knows what this does
-        	Looper.prepare();
+        	try {
+        		Looper.prepare();
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
         	
         	//Starts the GPS listener early cause it sucks and is slow
         	GpsListener mGPS = new GpsListener(getApplicationContext());
-
+        	
     	    //Gets the intent and pulls relevant data from it
         	Intent HomeIntent = getIntent();
         	int hour = HomeIntent.getIntExtra(HomeActivity.hour_name, 0);
@@ -193,7 +240,7 @@ public class ResultActivity extends Activity{
         	
         	//Converts the duration to a workable amount of time
         	if (!duration.equals("Less than 1 hour") && !duration.equals("More than 8 hours")) {
-        		duration_length = Integer.parseInt(duration);
+        		duration_length = Integer.parseInt(duration.substring(0,1));
         	} else if (duration.equals("Less than 1 hour")) {
         		duration_length = 1;
         	} else {
@@ -213,6 +260,7 @@ public class ResultActivity extends Activity{
         	//Checks to make sure a valid address was entered and that the user doesn't want to use their current location
         	if (final_lookup != null && !final_lookup.isEmpty() && !use_current) {
     	    	
+        		//Gets the geocoded coordinates from the address string
         		try {
     				fromLocationName = geocode.getFromLocationName(final_lookup, 1);
     			} catch (IOException e) {
@@ -226,9 +274,9 @@ public class ResultActivity extends Activity{
                 	lon = a.getLongitude();
                 	
             	} else {
-            		Log.e("FOOL", "WHAT WRONG WITH YOU FOOL");
+            		Log.e("Ouch", "Probably the address is invalid or the network isn't work");
         			
-            		error_geocode = "Couldn't find the address.";
+            		error_geocode = "Couldn't find the address. Are you sure your network is working and the address is correct?";
             		
             		//Shuts down the results screen if the address can't be geocoded
                     progressDialog.dismiss();
@@ -259,6 +307,18 @@ public class ResultActivity extends Activity{
         		Log.e("NO ADDRESS/CURRENT", "IDIOT");
         	}
         	
+        	//Checks to make sure the coordinates are within Toronto boundaries
+        	if (lat > max_lat || lat < min_lat || lon > max_lon || lon < min_lon) {
+    			
+        		error_loc = "The address you searched was outside of Toronto's boundaries.";
+        		
+        		//Shuts down the results screen because the search was outside of Toronto
+                progressDialog.dismiss();
+    			GoToSearch(findViewById(R.layout.activity_result));
+    			cancel(true);
+        	}
+        	
+        	
     	    //Generates the HashMap of parking ticket information
     		Gson gson = new Gson();
     		HashMap <String, StringMap> map = new HashMap <String, StringMap>();
@@ -266,13 +326,32 @@ public class ResultActivity extends Activity{
 
     		if (map != null) {
 	    	    //Searches the parking list for data
-	            Search(lat, lon, hour, duration, map);
-	            riskFactor(number_of_tickets, tickets_at_time, tickets_at_next_time, tickets_by_day, duration_length);
+	            ArrayList<ArrayList> values_list = Search(lat, lon, hour, duration, map);
+	            	            
+	            //Calculates risk factor for each box and generates an array	            
+	            for (int i = 0; i<25;i++) {
+	            	
+	            	ArrayList<Integer> current = values_list.get(i);
+	            	number_of_tickets = current.get(0);
+	            	tickets_at_time = current.get(3);
+	            	tickets_at_next_time = current.get(4);
+	            	tickets_by_day = current.get(2);
+	            	
+	            	double risk = riskFactor(number_of_tickets, tickets_at_time, tickets_at_next_time, tickets_by_day, duration_length);
+	            	
+	            	if (risks.size() >= 25) {
+	            		risks.set(i, risk);
+	            	} else {
+	            		risks.add(risk);
+	            	}
+	            }
     		} else {
     			Log.e("MAP IS NULL", "WHYYYY");
     		}
-            
-            Log.e("RISKY?", String.valueOf(risk_factor));
+    		
+    		//Kills the looper which I think will help with the crashes if you click too many buttons too fast
+    		Looper.myLooper().quit();
+
         	return null;  
         }  
   
@@ -289,13 +368,26 @@ public class ResultActivity extends Activity{
         protected void onPostExecute(Void result)  
         {  
             //close the progress dialog  
-            progressDialog.dismiss();  
+            progressDialog.dismiss();
             //initialize the View  
             setContentView(R.layout.activity_result);
             
             //Sets the progress bar to the appropriate risk factor
             progressBar = (ProgressBar) findViewById(R.id.risk);
-            progressBar.setProgress((int) (risk_factor * 100));
+            progressBar.setProgress((int) (risks.get(12) * 100));
+            
+            if (risks.get(12) < .33) {
+            	progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_low));
+            } else if (risks.get(12) < .66) {
+            	progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_mid));
+            } else {
+            	progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar_high));
+            }
+            
+            //Inflates the action bar and sets a couple of variables
+            ActionBar bar = getActionBar();
+            bar.setTitle("Search Results");
+            bar.show();
             
             //Defines the various text fields to be set
             TextView number_of_tickets_text = (TextView) findViewById(R.id.number_of_tickets);
@@ -303,10 +395,16 @@ public class ResultActivity extends Activity{
             TextView recommendation = (TextView) findViewById(R.id.recommendation);
             
             //Sets the text fields to the appropriate values
-            number_of_tickets_text.setText(String.valueOf(number_of_tickets));
-            average_ticket_price_text.setText("$" + String.valueOf(average_ticket_price));
-            recommendation.setText("You probably shouldn't rely on an app for committing crimes, partner.");
+            number_of_tickets_text.setText(String.valueOf(number_of_tickets_real));
+            average_ticket_price_text.setText("$" + String.valueOf(average_ticket_price_real));
             
+            if (risks.get(12) < .33) {
+            	recommendation.setText("This is a low risk zone. Parking here is probably safe, but remember to always use caution.");
+            } else if (risks.get(12) < .66) {
+            	recommendation.setText("This is a medium risk zone. You're taking a moderate risk parking illegally here. Use caution and seek out a legal parking spot if possible.");
+            } else {
+            	recommendation.setText("This is a high risk zone. Parking here is extremely risky. Find a legal spot or check the map for a lower risk zone.");
+            }
         }
     }
 
@@ -316,7 +414,6 @@ public class ResultActivity extends Activity{
     	//Stores the starting coordinates for the map
     	intent.putExtra(HomeActivity.lat_name, lat);
     	intent.putExtra(HomeActivity.lon_name, lon);
-    	intent.putExtra(HomeActivity.risk_name, risk_factor);
 
     	startActivity(intent);
     }
@@ -328,7 +425,41 @@ public class ResultActivity extends Activity{
     		intent.putExtra(HomeActivity.error_geocode_name, error_geocode);
     	} else if (error_gps != null) {
     		intent.putExtra(HomeActivity.error_gps_name, error_gps);
+    	} else if (error_loc != null) {
+    		intent.putExtra(HomeActivity.error_loc_name, error_loc);
     	}
     	startActivity(intent);
+    }
+    
+    public void GoToAbout(View view) {
+    	Intent intent = new Intent(this, AboutActivity.class);
+    	startActivity(intent);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // use an inflater to populate the ActionBar with items
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+    	
+    	if (item.toString().equals("About")) {
+    		GoToAbout(findViewById(R.layout.activity_result));
+    		return true;
+    	} else if (item.toString().equals("Map")) {
+    		GoToMap(findViewById(R.layout.activity_result));
+    		return true;
+    	} else if (item.toString().equals("Search")) {
+    		GoToSearch(findViewById(R.layout.activity_result));
+    		return true;
+    	}
+    	
+    	return true;
+    	
     }
 }
