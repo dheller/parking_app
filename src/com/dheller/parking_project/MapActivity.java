@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,6 +28,7 @@ public class MapActivity extends Activity{
 	double lat;
 	double lon;
 	LatLng coords;
+	LatLng searchHere;
 	
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,8 @@ public class MapActivity extends Activity{
         	Toast.makeText(getBaseContext(), "Google Play Services not installed", Toast.LENGTH_LONG).show();
         } else {       
         	setUpMapIfNeeded();
-        }        
+        }
+        
 	}
 	
 	private void setUpMapIfNeeded() {
@@ -88,6 +92,19 @@ public class MapActivity extends Activity{
 		        	MarkerOptions marker = new MarkerOptions().position(coords).title("Search Zone");
 		        	map.addMarker(marker);
 	        	}
+	        	
+	        	map.setOnMapClickListener(new OnMapClickListener() {
+	        		
+	        		@Override
+	        		public void onMapClick(LatLng point) {
+	        			
+	        			searchHere = point;
+	        			map.clear();
+	        			map.addMarker(new MarkerOptions().position(point).title("Search Here"));
+	        			
+	        		}
+	        	});
+	        	
 	        }
 	    }
 	}
@@ -131,20 +148,23 @@ public class MapActivity extends Activity{
 
 			}
 		}
-		
 	}
 	
 	public void mapSearch(View view) {
-		LatLng position = map.getCameraPosition().target;
 		
-		double lat_map = position.latitude;
-		double lon_map = position.longitude;
+		if (searchHere == null) {
+			Toast.makeText(getBaseContext(), "Click somewhere on the map to add a search marker", Toast.LENGTH_LONG).show();
+		} else {
 		
-		Intent intent = new Intent(this, HomeActivity.class);
-		intent.putExtra(HomeActivity.lat_via_map_name, String.valueOf(lat_map));
-		intent.putExtra(HomeActivity.lon_via_map_name, String.valueOf(lon_map));
-		startActivity(intent);
-		
+			double lat_map = searchHere.latitude;
+			double lon_map = searchHere.longitude;
+			
+			searchHere = null;
+			
+			Intent intent = new Intent(this, HomeActivity.class);
+			intent.putExtra(HomeActivity.lat_via_map_name, String.valueOf(lat_map));
+			intent.putExtra(HomeActivity.lon_via_map_name, String.valueOf(lon_map));
+			startActivity(intent);
+		}
 	}
-	
 }

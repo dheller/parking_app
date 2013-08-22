@@ -232,6 +232,12 @@ public class ResultActivity extends Activity{
         	
         	//Starts the GPS listener early cause it sucks and is slow
         	GpsListener mGPS = new GpsListener(getApplicationContext());
+        	mGPS.getLocation();
+        	
+    	    //Generates the HashMap of parking ticket information. This takes a long time and I want to see if it is enough to get GPS
+    		Gson gson = new Gson();
+    		HashMap <String, StringMap> map = new HashMap <String, StringMap>();
+    		map = (HashMap <String, StringMap>) gson.fromJson(HomeActivity.data, map.getClass());
         	
     	    //Gets the intent and pulls relevant data from it
         	Intent HomeIntent = getIntent();
@@ -288,10 +294,12 @@ public class ResultActivity extends Activity{
         	//Finds the current location of the user
         	else if (use_current) {
         		if (mGPS.canGetLocation && loc != null) {
-    	    		lat = mGPS.getLatitude(loc);
+    	    		
+        			mGPS.getLocation();
+        			
+        			lat = mGPS.getLatitude(loc);
     	    		lon = mGPS.getLongitude(loc);
         		} else {
-        			Log.e("HELP", "Hmm, couldn't get the location");
         			
         			error_gps = "Couldn't get the location using GPS";
         			
@@ -317,12 +325,6 @@ public class ResultActivity extends Activity{
     			GoToSearch(findViewById(R.layout.activity_result));
     			cancel(true);
         	}
-        	
-        	
-    	    //Generates the HashMap of parking ticket information
-    		Gson gson = new Gson();
-    		HashMap <String, StringMap> map = new HashMap <String, StringMap>();
-    		map = (HashMap <String, StringMap>) gson.fromJson(HomeActivity.data, map.getClass());
 
     		if (map != null) {
 	    	    //Searches the parking list for data

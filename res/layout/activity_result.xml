@@ -1,144 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/cool_gradient"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/risk_factor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/risk_factor"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:typeface="serif" />
-
-    <ProgressBar
-        android:id="@+id/risk"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/risk_factor"
-        android:layout_below="@+id/risk_factor"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:progress="60" />
-
-    <TextView
-        android:id="@+id/number_of_tickets_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/risk"
-        android:layout_below="@+id/risk"
-        android:layout_marginTop="10dp"
-        android:text="@string/number_of_tickets"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:typeface="serif" />
-
-    <TextView
-        android:id="@+id/average_ticket_price_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/number_of_tickets"
-        android:layout_below="@+id/number_of_tickets"
-        android:layout_marginTop="10dp"
-        android:text="@string/average_ticket_price_title"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:typeface="serif" />
-
-    <TextView
-        android:id="@+id/average_ticket_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/risk_factor"
-        android:layout_below="@+id/average_ticket_price_title"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:typeface="serif" />
-
-    <Button
-        android:id="@+id/button_search"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/recommendation"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="22dp"
-        android:onClick="GoToSearch"
-        android:text="@string/go_to_search"
-        android:textSize="12sp"
-        android:typeface="serif" />
-
-    <Button
-        android:id="@+id/button_map"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_search"
-        android:layout_alignBottom="@+id/button_search"
-        android:layout_alignLeft="@+id/recommendation"
-        android:onClick="GoToMap"
-        android:text="@string/map_results"
-        android:textSize="12sp"
-        android:typeface="serif" />
-
-    <TextView
-        android:id="@+id/number_of_tickets"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TextView01"
-        android:layout_below="@+id/TextView01"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:typeface="serif" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/number_of_tickets_title"
-        android:layout_below="@+id/number_of_tickets_title"
-        android:text="@string/zone"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        android:typeface="serif" />
-
-    <TextView
-        android:id="@+id/recommendation_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/average_ticket_price"
-        android:layout_below="@+id/average_ticket_price"
-        android:layout_marginTop="10dp"
-        android:text="@string/recommendation_title"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:typeface="serif" />
-
-    <TextView
-        android:id="@+id/recommendation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/recommendation_title"
-        android:layout_below="@+id/recommendation_title"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:typeface="serif" />
-
-</RelativeLayout>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:fillViewport="true">
+	
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@drawable/cool_gradient"
+	    android:orientation="vertical" >
+	
+	    <TextView
+	        android:id="@+id/risk_factor"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginTop="15dp"
+	        android:text="@string/risk_factor"
+	        android:textColor="@color/white"
+	        android:textSize="18sp"
+	        android:textStyle="bold"
+	        android:typeface="serif" />
+	
+	    <ProgressBar
+	        android:id="@+id/risk"
+	        style="?android:attr/progressBarStyleHorizontal"
+	        android:layout_width="250dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/risk_factor"
+	        android:layout_below="@+id/risk_factor"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="10dp"
+	        android:progress="60" />
+	
+	    <TextView
+	        android:id="@+id/number_of_tickets_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/risk"
+	        android:layout_below="@+id/risk"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/number_of_tickets"
+	        android:textColor="@color/white"
+	        android:textSize="18sp"
+	        android:textStyle="bold"
+	        android:typeface="serif" />
+	
+	    <TextView
+	        android:id="@+id/average_ticket_price_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/number_of_tickets"
+	        android:layout_below="@+id/number_of_tickets"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/average_ticket_price_title"
+	        android:textColor="@color/white"
+	        android:textSize="18sp"
+	        android:textStyle="bold"
+	        android:typeface="serif" />
+	
+	    <TextView
+	        android:id="@+id/average_ticket_price"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@id/risk_factor"
+	        android:layout_below="@+id/average_ticket_price_title"
+	        android:layout_marginTop="10dp"
+	        android:text="TextView"
+	        android:textColor="@color/white"
+	        android:textSize="14sp"
+	        android:typeface="serif" />
+	
+	    <Button
+	        android:id="@+id/button_search"
+	        android:layout_width="130dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@+id/recommendation"
+	        android:layout_marginRight="20dp"
+	        android:layout_marginTop="22dp"
+	        android:onClick="GoToSearch"
+	        android:text="@string/go_to_search"
+	        android:textSize="12sp"
+	        android:typeface="serif" />
+	
+	    <Button
+	        android:id="@+id/button_map"
+	        android:layout_width="130dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/button_search"
+	        android:layout_alignBottom="@+id/button_search"
+	        android:layout_alignLeft="@+id/recommendation"
+	        android:onClick="GoToMap"
+	        android:text="@string/map_results"
+	        android:textSize="12sp"
+	        android:typeface="serif" />
+	
+	    <TextView
+	        android:id="@+id/number_of_tickets"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/TextView01"
+	        android:layout_below="@+id/TextView01"
+	        android:layout_marginTop="10dp"
+	        android:text="TextView"
+	        android:textColor="@color/white"
+	        android:textSize="14sp"
+	        android:typeface="serif" />
+	
+	    <TextView
+	        android:id="@+id/TextView01"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/number_of_tickets_title"
+	        android:layout_below="@+id/number_of_tickets_title"
+	        android:text="@string/zone"
+	        android:textColor="@color/white"
+	        android:textSize="12sp"
+	        android:textStyle="italic"
+	        android:typeface="serif" />
+	
+	    <TextView
+	        android:id="@+id/recommendation_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/average_ticket_price"
+	        android:layout_below="@+id/average_ticket_price"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/recommendation_title"
+	        android:textColor="@color/white"
+	        android:textSize="18sp"
+	        android:textStyle="bold"
+	        android:typeface="serif" />
+	
+	    <TextView
+	        android:id="@+id/recommendation"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/recommendation_title"
+	        android:layout_below="@+id/recommendation_title"
+	        android:layout_marginTop="10dp"
+	        android:text="TextView"
+	        android:textColor="@color/white"
+	        android:textSize="14sp"
+	        android:typeface="serif" />
+	
+	</RelativeLayout>
+</ScrollView>

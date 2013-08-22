@@ -19,7 +19,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -63,6 +65,7 @@ public class HomeActivity extends Activity {
         //Inflates the action bar and sets a couple of variables
         ActionBar bar = getActionBar();
         bar.setTitle("Search by Address");
+        bar.setDisplayHomeAsUpEnabled(false);
         bar.show();
         
         //Initializes the checkbox object and sets it to checked
@@ -159,8 +162,21 @@ public class HomeActivity extends Activity {
     	//Creates a variable storing the address the user wishes to lookup
     	lookup = (EditText) findViewById(R.id.lookup);
     	String final_lookup = lookup.getText().toString();
-    	intent.putExtra(lookup_name, final_lookup);
     	
+    	//Tries to make sure Google understands this should be a toronto address
+    	if ((final_lookup.contains("toronto")
+    			|| final_lookup.contains("Toronto")
+    			|| final_lookup.contains("Ontario")
+    			|| final_lookup.contains("ontario")
+    			|| final_lookup.contains("Canada")
+    			|| final_lookup.contains("canada"))
+    			|| final_lookup.isEmpty()) {
+    		intent.putExtra(lookup_name, final_lookup);
+    	} else {
+    		final_lookup = final_lookup + ", Toronto, Ontario, Canada";
+    		intent.putExtra(lookup_name,  final_lookup);
+    	}
+
     	//Creates a variable to store the checkbox value
     	current_location = (CheckBox) findViewById(R.id.current_location);
     	boolean use_current = current_location.isChecked();
@@ -230,4 +246,28 @@ public class HomeActivity extends Activity {
         CheckBox now = (CheckBox) findViewById(R.id.now);
         now.setChecked(false);
     }
+    
+    //Some brilliant code that makes the keyboard go away without the back button
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+
+        View v = getCurrentFocus();
+        boolean ret = super.dispatchTouchEvent(event);
+
+        if (v instanceof EditText) {
+            View w = getCurrentFocus();
+            int scrcoords[] = new int[2];
+            w.getLocationOnScreen(scrcoords);
+            float x = event.getRawX() + w.getLeft() - scrcoords[0];
+            float y = event.getRawY() + w.getTop() - scrcoords[1];
+
+            if (event.getAction() == MotionEvent.ACTION_UP && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w.getBottom()) ) { 
+
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+    return ret;
+    }
+    
 }

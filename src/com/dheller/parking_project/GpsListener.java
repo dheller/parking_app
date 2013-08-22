@@ -1,5 +1,7 @@
 package com.dheller.parking_project;
 
+import java.util.Calendar;
+
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -52,7 +54,6 @@ public class GpsListener implements LocationListener {
 			if (isNetworkEnabled) {
 				
 				ResultActivity.loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-				Log.e("old time", String.valueOf(ResultActivity.loc.getTime()));
 				locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 1, this);
 
 			} else {
@@ -78,12 +79,11 @@ public class GpsListener implements LocationListener {
 	        if (isGPSEnabled == false && isNetworkEnabled == false) {
 	            Log.e("NETWORK", "NO GPS OR NETWORK");
 	        } else {
-	        	
 	        	this.canGetLocation = true;
 	            
 	        	//If the network is enabled, get lon and lat
 	        	if (isNetworkEnabled) {
-	                locationManager.requestLocationUpdates(
+	        		locationManager.requestLocationUpdates(
 	                        LocationManager.NETWORK_PROVIDER,
 	                        MIN_TIME_BW_UPDATES,
 	                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
@@ -93,7 +93,7 @@ public class GpsListener implements LocationListener {
 	                    //Grabs the time of the last update
 	                    long last_update = location.getTime();
 	                    long current = System.currentTimeMillis();
-	                    
+
 	                    //Checks to see if the current location is actually new
 	                    if (current - last_update > (1000 * 60 * 2)) {
 	                    	Log.e("Old location", "Fix this somehow");
@@ -101,7 +101,9 @@ public class GpsListener implements LocationListener {
 		                    
 	                    	//If the location is new and exists, pull the latitude and longitude
 	                    	if (location != null) {
-		                        latitude = location.getLatitude();
+		                        ResultActivity.loc = location;
+	                    		
+	                    		latitude = location.getLatitude();
 		                        longitude = location.getLongitude();
 		                    }
 	                    }
@@ -110,7 +112,6 @@ public class GpsListener implements LocationListener {
 	            // if GPS Enabled get lat/long using GPS Services
 	            if (isGPSEnabled) {
 	            	if (location == null) {
-	                    Log.e("NULL", "YES IT IS");
 	                	locationManager.requestLocationUpdates(
 	                            LocationManager.GPS_PROVIDER,
 	                            MIN_TIME_BW_UPDATES,
@@ -121,7 +122,7 @@ public class GpsListener implements LocationListener {
 	                		location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 	                        if (location != null) {
-	                        	
+	                        	ResultActivity.loc = location;
 			                    long banana = location.getTime();
 			                    Log.e("BAAaaaa", String.valueOf(banana));
 	                        	
@@ -161,6 +162,7 @@ public class GpsListener implements LocationListener {
 	@Override
 	public void onLocationChanged(Location loc) {
 		ResultActivity.loc = loc;
+		location = loc;
 		Log.e("you wish", "as if this would work");
 	}
 	
