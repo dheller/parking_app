@@ -30,8 +30,7 @@ import com.google.gson.internal.StringMap;
 public class ResultActivity extends Activity{
     
     //A ProgressDialog object  
-    private ProgressDialog progressDialog;  
-	Intent intent = new Intent(this, ResultActivity.class);
+    private ProgressDialog progressDialog;
 	
 	//Various objects on the results screen
 	static ProgressBar progressBar;
