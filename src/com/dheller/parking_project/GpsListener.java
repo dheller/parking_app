@@ -20,9 +20,9 @@ public class GpsListener implements LocationListener {
 	// flag for GPS status
 	boolean canGetLocation = false;
 
-	Location location; // location
-	double latitude; // latitude
-	double longitude; // longitude
+	Location location;
+	double latitude;
+	double longitude;
 
 	// The minimum distance to change Updates in meters
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;

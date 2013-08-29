@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 public class HomeActivity extends Activity {
 	
-	//Declares name variables used to identify data passed through intents
+	//Declares name variables used to uniquely identify data passed through intents
 	static String lat_name = "com.dheller.parking_project.LATITUDE";
 	static String lon_name = "com.dheller.parking_project.LONGITUDE";
 	static String duration_name = "com.dheller.parking_project.DURATION";
@@ -46,7 +46,7 @@ public class HomeActivity extends Activity {
 	static String lat_via_map_name = "com.dheller.parking_project.lat";
 	static String lon_via_map_name = "com.dheller.parking_project.lon";
 	
-	//Declares opening variables for the search screen
+	//Declares various opening variables for the search screen
 	static Spinner options;
 	Button button_map;
 	Button button_search;
@@ -62,13 +62,13 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        //Inflates the action bar and sets a couple of variables
+        //Inflates the main action bar and sets the title
         ActionBar bar = getActionBar();
         bar.setTitle("Search by Address");
         bar.setDisplayHomeAsUpEnabled(false);
         bar.show();
         
-        //Initializes the checkbox object and sets it to checked
+        //Initializes the checkbox object and sets it to checked by default
         CheckBox now = (CheckBox) findViewById(R.id.now);
         now.setChecked(true);
         
@@ -98,16 +98,20 @@ public class HomeActivity extends Activity {
         }
     }
     
+    //onResume is called after onCreate and if the activity is resumed instead of newly created
     @Override
     protected void onResume() {
     	super.onResume();
-    	    	
+    	
+    	//Requests the intent which opened the activity
     	Intent intent = getIntent();
-
+    	
+    	//Collects various error messages stored within the intent
     	String error_geocode = intent.getStringExtra(error_geocode_name);
     	String error_gps = intent.getStringExtra(error_gps_name);
     	String error_loc = intent.getStringExtra(error_loc_name);
     	
+    	//Checks which (if any) error message exists and generates a toast notification for the user
     	if (error_geocode != null) {
     		Log.e("JJ", "d'd");
     		Toast.makeText(getBaseContext(), error_geocode, Toast.LENGTH_LONG).show();
@@ -117,28 +121,31 @@ public class HomeActivity extends Activity {
     		Toast.makeText(getBaseContext(), error_loc, Toast.LENGTH_LONG).show();
     	}
     	
-    	//Pulls the latitude and longitude if they came from the map
+    	//Pulls the latitude and longitude if the intent came from the map screen
     	String lat = intent.getStringExtra(lat_via_map_name);
     	String lon = intent.getStringExtra(lon_via_map_name);
     	
+    	//Cleans the intent of the old coordinates
     	intent.putExtra(lat_via_map_name, "");
     	intent.putExtra(lon_via_map_name, "");
     	
+    	//Checks to see if coordinates came with the intent
     	if (lat != null && lon != null && !lat.isEmpty() && !lon.isEmpty()) {
-	    	//Populates the address search box with the supplied coordinates
+	    	
+    		//Populates the address search box with the supplied coordinates
 	    	lookup = (EditText) findViewById(R.id.lookup);
 	    	lookup.setText(lat + ", " + lon);
     	}
     	
     }
     
-    //Creates intent to start the map view
+    //Method to create intent to start the map activity
     public void GoToMap(View view) {
     	Intent intent = new Intent(this, MapActivity.class);
     	startActivity(intent);
     }
     
-    //Creates intent to display search results
+    //Method to create intent to search an address
     public void GoToResults(View view) {
     	Intent intent = new Intent(this, ResultActivity.class);
     	
@@ -155,7 +162,7 @@ public class HomeActivity extends Activity {
     		hour = current.hour;
     	}
     	
-    	//Stores the current hour in the intent and resets it
+    	//Stores the current hour in the intent and resets it to the defaul value
     	intent.putExtra(hour_name, hour);
     	hour = 100;
     	
@@ -163,7 +170,7 @@ public class HomeActivity extends Activity {
     	lookup = (EditText) findViewById(R.id.lookup);
     	String final_lookup = lookup.getText().toString();
     	
-    	//Tries to make sure Google understands this should be a toronto address
+    	//Tries to make sure Google understands this should be a toronto address and adds it to the intent
     	if ((final_lookup.contains("toronto")
     			|| final_lookup.contains("Toronto")
     			|| final_lookup.contains("Ontario")
@@ -171,13 +178,14 @@ public class HomeActivity extends Activity {
     			|| final_lookup.contains("Canada")
     			|| final_lookup.contains("canada"))
     			|| final_lookup.isEmpty()) {
+    		
     		intent.putExtra(lookup_name, final_lookup);
     	} else {
     		final_lookup = final_lookup + ", Toronto, Ontario, Canada";
     		intent.putExtra(lookup_name,  final_lookup);
     	}
 
-    	//Creates a variable to store the checkbox value
+    	//Creates a variable to store the checkbox value determining which location to use
     	current_location = (CheckBox) findViewById(R.id.current_location);
     	boolean use_current = current_location.isChecked();
     	intent.putExtra(current_name, use_current);
@@ -199,6 +207,7 @@ public class HomeActivity extends Activity {
     	
     }
     
+    //Checks for network connectivity
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager 
               = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -206,15 +215,16 @@ public class HomeActivity extends Activity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     
+    //Method that creates an intent to go to the about page
     public void GoToAbout(View view) {
     	Intent intent = new Intent(this, AboutActivity.class);
     	startActivity(intent);
     }
     
+    //Called when the ActionBar is initialized
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        // use an inflater to populate the ActionBar with items
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         
@@ -224,6 +234,7 @@ public class HomeActivity extends Activity {
         return true;
     }
     
+    //Called when users select an option from the ActionBar
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
     	
@@ -238,6 +249,7 @@ public class HomeActivity extends Activity {
     	return true;
     }
     
+    //Called if the user chooses to enter a custom start time for parking
     public void ParkLater (View view) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
@@ -247,7 +259,7 @@ public class HomeActivity extends Activity {
         now.setChecked(false);
     }
     
-    //Some brilliant code that makes the keyboard go away without the back button
+    //Some brilliant code that makes the keyboard go away if you tap away from it
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
 

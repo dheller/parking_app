@@ -31,11 +31,9 @@ public class ResultActivity extends Activity{
     
     //A ProgressDialog object  
     private ProgressDialog progressDialog;
-	
-	//Various objects on the results screen
 	static ProgressBar progressBar;
 	
-	//Static maximum and minimum coordinates, other variables
+	//Static maximum and minimum coordinates outlining Toronto, other required variables
 	double min_lat = 43.586584;
 	double min_lon = -79.639299;
 	double max_lat = 43.8517;
@@ -59,13 +57,13 @@ public class ResultActivity extends Activity{
 	String error_gps;
 	String error_loc;
 	
-	//Where risks go
+	//Where the risks for each zone will live
     public static ArrayList<Double> risks = new ArrayList();
 	
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        //Initialize a LoadViewTask object that handles the heavy lifting
+        //Initialize a LoadViewTask object that handles the heavy lifting in a separate thread
         new LoadViewTask().execute();
 
 	}
@@ -73,9 +71,9 @@ public class ResultActivity extends Activity{
 	//Handles the logic associated with searching for the proper information
 	public ArrayList Search(double lat, double lon, int hour, String duration, HashMap<String, StringMap> map) {
 	    
-	    //Changes the coordinates to indexes
+	    //Changes the coordinates to indexes representing zones
 		lat = (lat - min_lat) / .002;
-	    lat = Math.floor(lat); 
+	    lat = Math.floor(lat);
 	    lon = (lon - min_lon) / .002;
 	    lon = Math.floor(lon);
 	    
@@ -92,14 +90,14 @@ public class ResultActivity extends Activity{
 	    //This is the array of all the ticket data associated with the given coords
 	    ArrayList<ArrayList> values_list = new ArrayList();
 	    
-	    //This gets the appropriate ticket information for each box on the map
+	    //This gets the appropriate ticket information for each of the 25 zones on the map
 	    for (int x=0;x<5;x++) {
 	    	for (int y=0;y<5;y++) {
 	    		values_list.add((ArrayList) map.get(String.valueOf(lat_index - 2 + x)).get(String.valueOf(lon_index - 2 + y)));
 	    	}
 	    }
 		
-	    //This parses the information for each box and appends it to the values_list
+	    //Parses the information for each box and appends it to the values_list
 	    for (int i = 0; i < 25; i++) {
 	    	
 	    	ArrayList array = values_list.get(i);
@@ -115,7 +113,7 @@ public class ResultActivity extends Activity{
 			//Grabs the # of weekend tickets
 			tickets_by_day = Integer.parseInt(array.get(2).toString().substring(0, 1));
 			
-			//Pulls the number of tickets for the current time and the next time period
+			//Pulls the number of tickets for the current time period and the upcoming time period
 			if (hour < 8) {
 				int temp = array.get(3).toString().length();
 				int temp3 = array.get(4).toString().length();
@@ -134,23 +132,24 @@ public class ResultActivity extends Activity{
 			}
 
 			//Sets the appropriate values to the values list
-			ArrayList fixed = new ArrayList();
-			fixed.add(number_of_tickets);
-			fixed.add(average_ticket_price);
-			fixed.add(tickets_by_day);
-			fixed.add(tickets_at_time);
-			fixed.add(tickets_at_next_time);
+			ArrayList fixedArray = new ArrayList();
+			fixedArray.add(number_of_tickets);
+			fixedArray.add(average_ticket_price);
+			fixedArray.add(tickets_by_day);
+			fixedArray.add(tickets_at_time);
+			fixedArray.add(tickets_at_next_time);
 			
-			values_list.set(i, fixed);
+			values_list.set(i, fixedArray);
 			
-			//Scope shit is making this necessary.  Lazy way to keep track of the actual number of tickets (as opposed to nearby zones)
+			//Scope problems are making this necessary. Lazy way to keep track of the number of tickets 
+			// in the current zone (as opposed to nearby zones)
 			if (i == 12) {
 				number_of_tickets_real = number_of_tickets;
 				average_ticket_price_real = average_ticket_price;
 			}
 			
 	    }
-		//Figures out how long until the start of the next section
+		//Figures out how long until the start of the next time period
 		next_section = hour % 8;
 		
 		return values_list;
@@ -200,11 +199,6 @@ public class ResultActivity extends Activity{
 		
 	}
 	
-	//Don't think you use this anywhere anymore.  Schedule for deletion
-	public double logOfBase(int base, double num) {
-	    return Math.log(num) / Math.log(base);
-	}
-	
 	//To use the AsyncTask, it must be subclassed  
     private class LoadViewTask extends AsyncTask<Void, Integer, Void>  
     {  
@@ -222,7 +216,7 @@ public class ResultActivity extends Activity{
         protected Void doInBackground(Void... params)  
         {  
        	
-        	//Who knows what this does
+        	//Prepares the looper
         	try {
         		Looper.prepare();
         	} catch (Exception e) {
@@ -233,7 +227,8 @@ public class ResultActivity extends Activity{
         	GpsListener mGPS = new GpsListener(getApplicationContext());
         	mGPS.getLocation();
         	
-    	    //Generates the HashMap of parking ticket information. This takes a long time and I want to see if it is enough to get GPS
+    	    //Generates the HashMap of parking ticket information. This takes a long time
+        	//which I'm hoping will help with the GPS slowness
     		Gson gson = new Gson();
     		HashMap <String, StringMap> map = new HashMap <String, StringMap>();
     		map = (HashMap <String, StringMap>) gson.fromJson(HomeActivity.data, map.getClass());
@@ -243,7 +238,7 @@ public class ResultActivity extends Activity{
         	int hour = HomeIntent.getIntExtra(HomeActivity.hour_name, 0);
         	String duration = HomeActivity.options.getItemAtPosition(HomeActivity.options.getSelectedItemPosition()).toString();
         	
-        	//Converts the duration to a workable amount of time
+        	//Converts the parking duration to a workable integer
         	if (!duration.equals("Less than 1 hour") && !duration.equals("More than 8 hours")) {
         		duration_length = Integer.parseInt(duration.substring(0,1));
         	} else if (duration.equals("Less than 1 hour")) {
@@ -311,7 +306,7 @@ public class ResultActivity extends Activity{
         	
         	//Prompts the user to enter an address or choose to use their current location.  Shouldn't ever end up here.
         	else {
-        		Log.e("NO ADDRESS/CURRENT", "IDIOT");
+        		Log.e("NO ADDRESS/CURRENT", "WHOOPS");
         	}
         	
         	//Checks to make sure the coordinates are within Toronto boundaries
@@ -364,7 +359,7 @@ public class ResultActivity extends Activity{
             progressDialog.setProgress(values[0]);  
         }  
   
-        //after executing the code in the thread  
+        //Starts after executing the code in the thread  
         @Override  
         protected void onPostExecute(Void result)  
         {  

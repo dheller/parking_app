@@ -21,9 +21,8 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MapActivity extends Activity{
     
+	//Required variables
 	private GoogleMap map;
-	
-	//Da variables
 	Intent intent;
 	double lat;
 	double lon;
@@ -35,7 +34,7 @@ public class MapActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
         
-        //Inflates the action bar and sets a couple of variables
+        //Inflates the action bar
         ActionBar bar = getActionBar();
         bar.hide();
         
@@ -48,6 +47,7 @@ public class MapActivity extends Activity{
 		lon = intent.getDoubleExtra(HomeActivity.lon_name, -79.4042);
 		coords = new LatLng(lat,lon);
         
+		//Checks if GooglePlayServices are installed, informs the user if they're not
         if (checkGooglePlayServices != ConnectionResult.SUCCESS) {
         	Toast.makeText(getBaseContext(), "Google Play Services not installed", Toast.LENGTH_LONG).show();
         } else {       
@@ -56,6 +56,7 @@ public class MapActivity extends Activity{
         
 	}
 	
+	//Handles the initialization of the map if required
 	private void setUpMapIfNeeded() {
 		
 		// Do a null check to confirm that we have not already instantiated the map.
@@ -70,10 +71,10 @@ public class MapActivity extends Activity{
 	        	Toast.makeText(getBaseContext(), "Something went wrong", Toast.LENGTH_LONG).show();
 	        }
 	        
-	        // Check if we were successful in obtaining the map.
+	        // Confirm we were successful in obtaining the map.
 	        if (map != null) {
 	        	
-	        	//Checks to see if we have custom coordinates so we can zoom in
+	        	//Checks to see if we have custom coordinates so we can zoom in on them
 	        	if (lat != 43.6481 || lon != -79.4042) {
 	        		map.moveCamera(CameraUpdateFactory.zoomTo(16));
 	        	} else {
@@ -85,7 +86,7 @@ public class MapActivity extends Activity{
 	        	
 	        	if (lat != 43.6481 || lon != -79.4042) {
 	        	
-		        	//Generates the polygons
+		        	//Generates the polygons showing the risk of a zone
 		        	generatePolygons();
 		        	
 		        	//Marks the current search point
@@ -93,8 +94,10 @@ public class MapActivity extends Activity{
 		        	map.addMarker(marker);
 	        	}
 	        	
+	        	//Sets a one use listener for clicks to the map
 	        	map.setOnMapClickListener(new OnMapClickListener() {
 	        		
+	        		//Adds a marker to the map if the user clicks to search there
 	        		@Override
 	        		public void onMapClick(LatLng point) {
 	        			
@@ -109,6 +112,7 @@ public class MapActivity extends Activity{
 	    }
 	}
 	
+	//Method to turn the risk score into a color
 	int turnRiskIntoColor(double risk) {
 		
 		double red;
@@ -128,16 +132,20 @@ public class MapActivity extends Activity{
 		return Color.argb(80, red_int, green_int, 0);
 	}
 	
+	//This handles the polygon overlays showing the risk of a zone
 	public void generatePolygons() {
 		
+		//Creates 25 unique polygons
 		for (int x = 0; x<5; x++) {
 			for (int y = 0; y<5; y++) {
 				
+				//Determines what color the polygon should be
 	        	int color = turnRiskIntoColor(ResultActivity.risks.get(x + (y * 5)));
 				
 	        	double lat_adj = x * .002;
 	        	double lon_adj = y * .002;
 	        	
+	        	//Adds the new polygon to the map
 	            map.addPolygon(new PolygonOptions()
 	            .add(new LatLng(lat + .005 - lat_adj, lon + .005 - lon_adj),
 	            		new LatLng(lat + .005 - lat_adj, lon + .003 - lon_adj),
@@ -150,6 +158,7 @@ public class MapActivity extends Activity{
 		}
 	}
 	
+	//Handles user clicks to search via the map
 	public void mapSearch(View view) {
 		
 		if (searchHere == null) {
