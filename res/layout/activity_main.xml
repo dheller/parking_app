@@ -70,7 +70,7 @@
 	        android:layout_marginRight="20dp"
 	        android:layout_marginTop="10dp"
 	        android:minWidth="125dp"
-	        android:onClick="GoToMap"
+	        android:onClick="goToMap"
 	        android:text="@string/map"
 	        android:textSize="12sp"
 	        android:typeface="serif" />
@@ -83,7 +83,7 @@
 	        android:layout_below="@+id/current_location"
 	        android:layout_marginTop="10dp"
 	        android:minWidth="125dp"
-	        android:onClick="GoToResults"
+	        android:onClick="goToResults"
 	        android:text="@string/search"
 	        android:textSize="12sp"
 	        android:typeface="serif" />

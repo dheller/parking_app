@@ -9,14 +9,18 @@ import android.text.format.DateFormat;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+/* This small class is called when the user chooses to enter a custom time on the HomeAcivity.
+ * It creates a dialog box with a timepicker object when called
+ */
+
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Use the current time as the default values for the picker
-		final Calendar c = Calendar.getInstance();
-		int hour = c.get(Calendar.HOUR_OF_DAY);
-		int minute = c.get(Calendar.MINUTE);
+		final Calendar calendar = Calendar.getInstance();
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute = calendar.get(Calendar.MINUTE);
 		
 		// Create a new instance of TimePickerDialog and return it
 		return new TimePickerDialog(getActivity(), this, hour, minute,

@@ -79,7 +79,7 @@
 	        android:layout_below="@+id/recommendation"
 	        android:layout_marginRight="20dp"
 	        android:layout_marginTop="22dp"
-	        android:onClick="GoToSearch"
+	        android:onClick="goToSearch"
 	        android:text="@string/go_to_search"
 	        android:textSize="12sp"
 	        android:typeface="serif" />
@@ -91,7 +91,7 @@
 	        android:layout_alignBaseline="@+id/button_search"
 	        android:layout_alignBottom="@+id/button_search"
 	        android:layout_alignLeft="@+id/recommendation"
-	        android:onClick="GoToMap"
+	        android:onClick="goToMap"
 	        android:text="@string/map_results"
 	        android:textSize="12sp"
 	        android:typeface="serif" />

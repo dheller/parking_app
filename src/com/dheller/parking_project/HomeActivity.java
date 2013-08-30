@@ -30,28 +30,35 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+/* This is the first activity called when the user opens the app.
+ * The user is presented with a search screen where they can enter
+ * an address and time to query the risk of parking in a specific 
+ * spot. They also have the option of searching visually by clicking
+ * on a map.
+ */
+
 public class HomeActivity extends Activity {
 	
 	//Declares name variables used to uniquely identify data passed through intents
-	static String lat_name = "com.dheller.parking_project.LATITUDE";
-	static String lon_name = "com.dheller.parking_project.LONGITUDE";
-	static String duration_name = "com.dheller.parking_project.DURATION";
-	static String hour_name = "com.dheller.parking_project.HOUR";
-	static String lookup_name = "com.dheller.parking_project.LOOKUP";
-	static String current_name = "com.dheller.parking_project.CURRENT";
-	static String error_geocode_name = "com.dheller.parking_project.geocode";
-	static String error_gps_name = "com.dheller.parking_project.gps";
-	static String error_loc_name = "com.dheller.parking_project.loc";
-	static String risk_name = "com.dheller.parking_project.risk";
-	static String lat_via_map_name = "com.dheller.parking_project.lat";
-	static String lon_via_map_name = "com.dheller.parking_project.lon";
+	final static String latName = "com.dheller.parking_project.LATITUDE";
+	final static String lonName = "com.dheller.parking_project.LONGITUDE";
+	final static String durationName = "com.dheller.parking_project.DURATION";
+	final static String hourName = "com.dheller.parking_project.HOUR";
+	final static String lookupName = "com.dheller.parking_project.LOOKUP";
+	final static String currentName = "com.dheller.parking_project.CURRENT";
+	final static String errorGeocodeName = "com.dheller.parking_project.geocode";
+	final static String errorGpsName = "com.dheller.parking_project.gps";
+	final static String errorLocName = "com.dheller.parking_project.loc";
+	final static String riskName = "com.dheller.parking_project.risk";
+	final static String latViaMapName = "com.dheller.parking_project.lat";
+	final static String lonViaMapName = "com.dheller.parking_project.lon";
 	
 	//Declares various opening variables for the search screen
 	static Spinner options;
-	Button button_map;
-	Button button_search;
+	Button buttonMap;
+	Button buttonSearch;
 	static EditText lookup;
-	static CheckBox current_location;
+	static CheckBox currentLocation;
 	static TimePicker timePicker;
 	static public String data;
 	static int hour = 100;
@@ -107,27 +114,26 @@ public class HomeActivity extends Activity {
     	Intent intent = getIntent();
     	
     	//Collects various error messages stored within the intent
-    	String error_geocode = intent.getStringExtra(error_geocode_name);
-    	String error_gps = intent.getStringExtra(error_gps_name);
-    	String error_loc = intent.getStringExtra(error_loc_name);
+    	String errorGeocode = intent.getStringExtra(errorGeocodeName);
+    	String errorGps = intent.getStringExtra(errorGpsName);
+    	String errorLoc = intent.getStringExtra(errorLocName);
     	
     	//Checks which (if any) error message exists and generates a toast notification for the user
-    	if (error_geocode != null) {
-    		Log.e("JJ", "d'd");
-    		Toast.makeText(getBaseContext(), error_geocode, Toast.LENGTH_LONG).show();
-    	} else if (error_gps != null) {
-    		Toast.makeText(getBaseContext(), error_gps, Toast.LENGTH_LONG).show();
-    	} else if (error_loc != null) {
-    		Toast.makeText(getBaseContext(), error_loc, Toast.LENGTH_LONG).show();
+    	if (errorGeocode != null) {
+    		Toast.makeText(getBaseContext(), errorGeocode, Toast.LENGTH_LONG).show();
+    	} else if (errorGps != null) {
+    		Toast.makeText(getBaseContext(), errorGps, Toast.LENGTH_LONG).show();
+    	} else if (errorLoc != null) {
+    		Toast.makeText(getBaseContext(), errorLoc, Toast.LENGTH_LONG).show();
     	}
     	
     	//Pulls the latitude and longitude if the intent came from the map screen
-    	String lat = intent.getStringExtra(lat_via_map_name);
-    	String lon = intent.getStringExtra(lon_via_map_name);
+    	String lat = intent.getStringExtra(latViaMapName);
+    	String lon = intent.getStringExtra(lonViaMapName);
     	
     	//Cleans the intent of the old coordinates
-    	intent.putExtra(lat_via_map_name, "");
-    	intent.putExtra(lon_via_map_name, "");
+    	intent.putExtra(latViaMapName, "");
+    	intent.putExtra(lonViaMapName, "");
     	
     	//Checks to see if coordinates came with the intent
     	if (lat != null && lon != null && !lat.isEmpty() && !lon.isEmpty()) {
@@ -140,13 +146,13 @@ public class HomeActivity extends Activity {
     }
     
     //Method to create intent to start the map activity
-    public void GoToMap(View view) {
+    public void goToMap(View view) {
     	Intent intent = new Intent(this, MapActivity.class);
     	startActivity(intent);
     }
     
     //Method to create intent to search an address
-    public void GoToResults(View view) {
+    public void goToResults(View view) {
     	Intent intent = new Intent(this, ResultActivity.class);
     	
     	//Loads the checkbox to see if the user wants to park now
@@ -163,43 +169,43 @@ public class HomeActivity extends Activity {
     	}
     	
     	//Stores the current hour in the intent and resets it to the defaul value
-    	intent.putExtra(hour_name, hour);
+    	intent.putExtra(hourName, hour);
     	hour = 100;
     	
     	//Creates a variable storing the address the user wishes to lookup
     	lookup = (EditText) findViewById(R.id.lookup);
-    	String final_lookup = lookup.getText().toString();
+    	String finalLookup = lookup.getText().toString();
     	
     	//Tries to make sure Google understands this should be a toronto address and adds it to the intent
-    	if ((final_lookup.contains("toronto")
-    			|| final_lookup.contains("Toronto")
-    			|| final_lookup.contains("Ontario")
-    			|| final_lookup.contains("ontario")
-    			|| final_lookup.contains("Canada")
-    			|| final_lookup.contains("canada"))
-    			|| final_lookup.isEmpty()) {
+    	if ((finalLookup.contains("toronto")
+    			|| finalLookup.contains("Toronto")
+    			|| finalLookup.contains("Ontario")
+    			|| finalLookup.contains("ontario")
+    			|| finalLookup.contains("Canada")
+    			|| finalLookup.contains("canada"))
+    			|| finalLookup.isEmpty()) {
     		
-    		intent.putExtra(lookup_name, final_lookup);
+    		intent.putExtra(lookupName, finalLookup);
     	} else {
-    		final_lookup = final_lookup + ", Toronto, Ontario, Canada";
-    		intent.putExtra(lookup_name,  final_lookup);
+    		finalLookup = finalLookup + ", Toronto, Ontario, Canada";
+    		intent.putExtra(lookupName,  finalLookup);
     	}
 
     	//Creates a variable to store the checkbox value determining which location to use
-    	current_location = (CheckBox) findViewById(R.id.current_location);
-    	boolean use_current = current_location.isChecked();
-    	intent.putExtra(current_name, use_current);
+    	currentLocation = (CheckBox) findViewById(R.id.current_location);
+    	boolean useCurrent = currentLocation.isChecked();
+    	intent.putExtra(currentName, useCurrent);
     	
     	//Verifies the user has either entered an address or used their current location, but not both
-    	if ((lookup != null && !final_lookup.isEmpty()) && use_current) {
+    	if ((lookup != null && !finalLookup.isEmpty()) && useCurrent) {
     		Toast.makeText(getBaseContext(), "Uncheck \"use current location\" to search for a specific address", Toast.LENGTH_LONG).show();
-    	} else if ((lookup != null && !final_lookup.isEmpty())) {
+    	} else if ((lookup != null && !finalLookup.isEmpty())) {
     		if (isNetworkAvailable()) {
     			startActivity(intent);
     		} else {
     			Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG).show();
     		}
-    	} else if (use_current) {
+    	} else if (useCurrent) {
     		startActivity(intent);
     	} else {
     		Toast.makeText(getBaseContext(), "Please select \"use current location\" or enter an address", Toast.LENGTH_LONG).show();
@@ -216,7 +222,7 @@ public class HomeActivity extends Activity {
     }
     
     //Method that creates an intent to go to the about page
-    public void GoToAbout(View view) {
+    public void goToAbout(View view) {
     	Intent intent = new Intent(this, AboutActivity.class);
     	startActivity(intent);
     }
@@ -239,18 +245,16 @@ public class HomeActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item){
     	
     	if (item.toString().equals("About")) {
-    		GoToAbout(findViewById(R.layout.activity_result));
-    		return true;
+    		goToAbout(findViewById(R.layout.activity_result));
     	} else if (item.toString().equals("Map")) {
-    		GoToMap(findViewById(R.layout.activity_result));
-    		return true;
+    		goToMap(findViewById(R.layout.activity_result));
     	}
     	
     	return true;
     }
     
     //Called if the user chooses to enter a custom start time for parking
-    public void ParkLater (View view) {
+    public void parkLater (View view) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
         
